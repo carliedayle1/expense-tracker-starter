@@ -15,9 +15,15 @@ Expense tracker starter project from the [Claude Code course](https://codewithmo
 
 ## Architecture
 
-Single-component React app (Vite + React 19, JSX, no TypeScript). All application logic lives in `src/App.jsx` — state management, form handling, filtering, and rendering are in one file with no component extraction.
+React 19 + Vite, JSX, no TypeScript. Components:
+
+- `App.jsx` — Root component, owns the `transactions` state array and passes it down.
+- `Summary.jsx` — Computes and displays total income, expenses, and balance from `transactions` prop.
+- `TransactionForm.jsx` — Form with local state for adding transactions. Calls `onAddTransaction` callback.
+- `TransactionList.jsx` — Filters and displays transactions in a table. Owns filter state locally.
+
+Categories are defined independently in `TransactionForm` and `TransactionList`.
 
 ## Known Issues
 
-- Transaction amounts are stored as strings, causing string concatenation instead of numeric addition in balance calculations.
 - "Freelance Work" is categorized as "expense" instead of "income" in seed data.
