@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Summary from './Summary'
 import TransactionForm from './TransactionForm'
@@ -16,18 +16,40 @@ function App() {
     { id: 8, description: "Netflix", amount: 15, type: "expense", category: "entertainment", date: "2025-01-10" },
   ]);
 
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
   const handleAddTransaction = (transaction) => {
     setTransactions([...transactions, transaction]);
   };
 
+  const handleDeleteTransaction = (id) => {
+    setTransactions(transactions.filter(t => t.id !== id));
+  };
+
   return (
     <div className="app">
-      <h1>Finance Tracker</h1>
-      <p className="subtitle">Track your income and expenses</p>
+      <div className="app-header">
+        <div>
+          <h1>Finance Tracker</h1>
+          <p className="subtitle">Track your income and expenses</p>
+        </div>
+        <button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? '\u2600\uFE0F' : '\uD83C\uDF19'}
+        </button>
+      </div>
 
       <Summary transactions={transactions} />
       <TransactionForm onAddTransaction={handleAddTransaction} />
-      <TransactionList transactions={transactions} />
+      <TransactionList transactions={transactions} onDeleteTransaction={handleDeleteTransaction} />
     </div>
   );
 }
